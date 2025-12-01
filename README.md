@@ -44,32 +44,15 @@ This system provides a two-phase approach to port tariff calculations:
 
 The system follows a clean architecture with clear separation of concerns:
 
-```
-User Query
-    ↓
-Query Understanding (LLM) → Extracts structured parameters
-    ↓
-    ├─→ Retriever (Vector DB) ────────────────┐
-    │                                          │
-    └─→ Compile Information → Tariff Computation ──┤
-                      ↓                            │
-              (Deterministic)                      │
-                                                   ↓
-                                    Response Generator (LLM)
-```
+![Architecture Diagram](output.png)
 
-### Workflow Nodes
+### LangGraph-based Workflow Nodes
 
-1. **Query Understanding**: Extracts structured parameters from natural language
-2. **Retriever**: Retrieves relevant context from vector database (runs in parallel with Node 3)
-   - Output goes directly to Node 5 (Response Generator)
-3. **Compile Information**: Validates and enriches parameters using JSON dataset (runs in parallel with Node 2)
-   - Output goes to Node 4 (Tariff Computation)
+1. **Query Understanding**: Extracts structured parameters from natural language. Uses LLM.
+2. **Retriever**: Retrieves relevant context from vector database
+3. **Compile Information**: Validates and enriches parameters using JSON dataset  
 4. **Tariff Computation**: Deterministic calculation using extracted rules
-   - Receives input from Node 3 only
-   - Output goes to Node 5 (Response Generator)
-5. **Response Generator**: Combines calculation results (from Node 4) and RAG context (from Node 2) into natural language
-   - Waits for both Node 2 and Node 4 to complete
+5. **Response Generator**: Combines calculation results and RAG context into natural language
 
 ## Project Structure
 
@@ -80,9 +63,6 @@ v0/
 ├── setup.py                    # Package configuration
 ├── README.md                   # This file
 │
-├── config/                     # Configuration
-│   └── config.py               # Paths and settings
-│
 ├── scripts/                     # Utility scripts
 │   └── extract_tariff_data.py  # One-time data extraction script
 │
@@ -90,8 +70,7 @@ v0/
 │   ├── models/                 # Data models
 │   │   ├── schema.py           # Tariff data models (VesselType, TariffRule, etc.)
 │   │   ├── query_models.py     # Query input models (QueryParameters, VesselDetails, etc.)
-│   │   ├── utils.py            # Model utilities (condition evaluation, cost calculation)
-│   │   └── examples.py         # Example tariff rules
+│   │   └── utils.py            # Model utilities (condition evaluation, cost calculation)
 │   │
 │   ├── prompts/                # Prompt templates
 │   │   ├── query_prompts.py    # Query understanding prompts
@@ -100,7 +79,7 @@ v0/
 │   │
 │   └── core/                   # Business logic
 │       ├── query_understanding.py  # Query understanding class
-│       ├── retriever.py        # Vector database retriever
+│       ├── retriever.py        # Vector database retriever (RAG)
 │       ├── dataset_loader.py   # Load tariff data from disk
 │       ├── data_extractor.py   # Extract data from PDF (one-time)
 │       ├── calculator.py       # Deterministic tariff calculator
@@ -117,12 +96,14 @@ v0/
 │   └── (ChromaDB files)
 │
 └── tests/                      # Test suite
+    ├── conftest.py             # Pytest configuration and fixtures
+    ├── test_fixtures.py        # Test fixtures
     ├── unit/                   # Unit tests
     │   ├── test_models_schema.py
     │   ├── test_models_utils.py
     │   ├── test_query_understanding.py
     │   ├── test_calculator.py
-    │   ├── test_retriever.py
+    │   ├── test_rag_retriever.py
     │   ├── test_response_generator.py
     │   └── test_extractor_loader.py
     └── integration/            # Integration tests
@@ -200,10 +181,6 @@ Both features require a valid `OPENAI_API_KEY` in your `.env` file.
 ### Example Queries
 
 - "A vessel at 14,000 GT arrives at the Port of Gothenburg from a port in Europe. The vessel has an ESI score of at least 30 points. Leaves 15 m³ (> 11 m³) sludge and receives a SEK 0.05 discount/GT on the waste fee when a valid certificate can be presented. Vessel type is Tanker. Calculate the total port tariff."
-
-- "What are the charges for a 50,000 GT container vessel arriving from Singapore?"
-
-- "Calculate tariff for a 5,000 GT cruise vessel with 2,000 passengers."
 
 ## Workflow
 
@@ -283,30 +260,6 @@ pytest tests/unit/test_calculator.py
 - **`tests/unit/`**: Unit tests for individual components
 - **`tests/integration/`**: Integration tests for the complete workflow
 
-## Code Documentation
-
-All classes and functions in the codebase are fully documented with comprehensive docstrings following Google-style conventions. The documentation includes:
-
-- **Class-level docstrings**: Description, attributes, and usage notes
-- **Function-level docstrings**: Description, Args, Returns, Raises, and Notes sections
-- **Type information**: Parameter types, return types, and type hints throughout
-
-### Generating Documentation
-
-You can generate documentation from the docstrings using standard Python tools:
-
-```bash
-# Using pydoc (built-in)
-pydoc src.core.calculator
-pydoc src.models.schema
-
-# Using Sphinx (if installed)
-sphinx-apidoc -o docs src
-sphinx-build -b html docs docs/_build
-```
-
-All docstrings are suitable for automated documentation generation tools like Sphinx, pydoc, or similar.
-
 ## Key Design Decisions
 
 1. **Two-Phase Approach**: Separates expensive LLM extraction (one-time) from fast deterministic calculations (runtime)
@@ -314,7 +267,3 @@ All docstrings are suitable for automated documentation generation tools like Sp
 3. **RAG for Context**: Provides explanations and additional context without affecting calculation accuracy
 4. **LangGraph Orchestration**: Enables parallel execution and clear workflow definition
 5. **Clean Architecture**: Separation of data models, business logic, and prompts
-
-## License
-
-MIT License - see LICENSE file for details.
