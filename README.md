@@ -14,7 +14,7 @@ A deterministic tariff calculation system for port charges, augmented with RAG (
 - [Testing](#testing)
 - [Code Documentation](#code-documentation)
 
-## ⚠️ Prerequisites
+## Prerequisites
 
 **Before you begin, you must have:**
 - An OpenAI API key (get one from [OpenAI Platform](https://platform.openai.com/api-keys))
@@ -141,7 +141,7 @@ v0/
    pip install -r requirements.txt
    ```
 
-4. **⚠️ IMPORTANT: Set up environment variables**
+4. ** IMPORTANT: Set up environment variables**
    
    **You must create a `.env` file with your OpenAI API key before running the system.**
    
