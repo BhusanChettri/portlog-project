@@ -67,6 +67,12 @@ v0/
 │   └── extract_tariff_data.py  # One-time data extraction script
 │
 ├── src/                        # Source code
+│   ├── config/                 # Configuration and utilities
+│   │   ├── settings.py         # Centralized configuration (Pydantic Settings)
+│   │   ├── logging_config.py   # Logging setup and configuration
+│   │   ├── messages.py         # User-facing message constants
+│   │   └── env_loader.py       # Environment variable loading utility
+│   │
 │   ├── models/                 # Data models
 │   │   ├── schema.py           # Tariff data models (VesselType, TariffRule, etc.)
 │   │   ├── query_models.py     # Query input models (QueryParameters, VesselDetails, etc.)
