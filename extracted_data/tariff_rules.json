@@ -1,0 +1,1807 @@
+{
+  "version": "2025",
+  "port_name": "Port of Gothenburg",
+  "rules": [
+    {
+      "vessel_type": "tankers",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 0.0,
+          "max_value": 2300.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 2301.0,
+          "max_value": 3300.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 3301.0,
+          "max_value": 15000.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 15001.0,
+          "max_value": null,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 3.04,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues are calculated based on GT bands, and for the vessel’s total GT.",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 2301.0,
+          "max_value": 3300.0,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 3.7,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for tankers 2301-3300 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 3301.0,
+          "max_value": 15000.0,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 4.08,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for tankers 3301-15000 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 15001.0,
+          "max_value": null,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 5.75,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for tankers over 15000 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "certificates",
+          "operator": "must",
+          "value": "Yes",
+          "description": "Applicable if the vessel is certified according to Commission Implementing Regulation (EU) 2022/91."
+        }
+      ],
+      "pricing": {
+        "rate": -0.05,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Discount for certified ships on waste fee",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "tankers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 0.0,
+          "max_value": 20000.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 20001.0,
+          "max_value": 40000.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 40001.0,
+          "max_value": 60000.0,
+          "band_type": "standard"
+        },
+        {
+          "name": "GT bands",
+          "min_value": 60001.0,
+          "max_value": null,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.91,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues are based on a progressive banding for container vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 20001.0,
+          "max_value": 40000.0,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.67,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for container vessels 20001-40000 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 40001.0,
+          "max_value": 60000.0,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.12,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for container vessels 40001-60000 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT bands",
+          "min_value": 60001.0,
+          "max_value": null,
+          "band_type": "standard"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 0.78,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for container vessels over 60000 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "certificates",
+          "operator": "must",
+          "value": "Yes",
+          "description": "Applicable if the vessel is certified according to Commission Implementing Regulation (EU) 2022/91."
+        }
+      ],
+      "pricing": {
+        "rate": -0.05,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Discount for certified ships on waste fee",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "environmental_discounts",
+      "charging_method": "flat_sek_per_call",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "ESI score",
+          "operator": "at least",
+          "value": 30,
+          "description": "Applicable for vessels with minimum ESI score of 30 points."
+        }
+      ],
+      "pricing": {
+        "rate": null,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": 10.0,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Discount for environmental compliance",
+      "notes": null
+    },
+    {
+      "vessel_type": "container_vessels",
+      "component": "environmental_discounts",
+      "charging_method": "flat_sek_per_call",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "fossil-free fuel percentage",
+          "operator": "at least",
+          "value": 30,
+          "description": "Applicable for vessels that bunker at least 30% fossil-free fuel of their annual consumption in Gothenburg."
+        }
+      ],
+      "pricing": {
+        "rate": null,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": 10.0,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Additional discount for using fossil-free fuel",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "call frequency bands",
+          "min_value": 1.0,
+          "max_value": 2.0,
+          "band_type": "call_frequency"
+        },
+        {
+          "name": "call frequency bands",
+          "min_value": 3.0,
+          "max_value": 6.0,
+          "band_type": "call_frequency"
+        },
+        {
+          "name": "call frequency bands",
+          "min_value": 7.0,
+          "max_value": null,
+          "band_type": "call_frequency"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.53,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for RORO vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste RORO",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports RORO",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports RORO",
+      "notes": null
+    },
+    {
+      "vessel_type": "roro_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³ RORO",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 0.98,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for car carriers",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "car_carriers",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "call frequency bands",
+          "min_value": 1.0,
+          "max_value": 2.0,
+          "band_type": "call_frequency"
+        },
+        {
+          "name": "call frequency bands",
+          "min_value": 3.0,
+          "max_value": 6.0,
+          "band_type": "call_frequency"
+        },
+        {
+          "name": "call frequency bands",
+          "min_value": 7.0,
+          "max_value": 20.0,
+          "band_type": "call_frequency"
+        },
+        {
+          "name": "call frequency bands",
+          "min_value": 21.0,
+          "max_value": null,
+          "band_type": "call_frequency"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.53,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ROPAX vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "ropax_passenger_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 2.08,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for break bulk vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "break_bulk_lolo_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "inland_waterways",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "location",
+          "operator": "within",
+          "value": "Gothenburg to Lake Vänern",
+          "description": "Applicable for vessels classified according to Inland Waterways and operating within the Gothenburg – Lake Vänern area."
+        }
+      ],
+      "pricing": {
+        "rate": null,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": 25.0,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Discount for inland waterways vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 0.0,
+          "max_value": 40.0,
+          "band_type": "length"
+        },
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 41.0,
+          "max_value": 60.0,
+          "band_type": "length"
+        },
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 61.0,
+          "max_value": 80.0,
+          "band_type": "length"
+        },
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 81.0,
+          "max_value": 100.0,
+          "band_type": "length"
+        },
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 101.0,
+          "max_value": null,
+          "band_type": "length"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 3600.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for yachts under 40m",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 41.0,
+          "max_value": 60.0,
+          "band_type": "length"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 4300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for yachts between 41m and 60m",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 61.0,
+          "max_value": 80.0,
+          "band_type": "length"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 5400.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for yachts between 61m and 80m",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 81.0,
+          "max_value": 100.0,
+          "band_type": "length"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 6200.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for yachts between 81m and 100m",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "length of vessel (loa)",
+          "min_value": 101.0,
+          "max_value": null,
+          "band_type": "length"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 9300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for yachts over 101m",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "black_grey_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 45.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Fees for black- and grey water",
+      "notes": null
+    },
+    {
+      "vessel_type": "yachts",
+      "component": "fresh_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 45.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Fresh water price",
+      "notes": null
+    },
+    {
+      "vessel_type": "archipelago_traffic",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 23900.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for archipelago traffic vessels annually",
+      "notes": null
+    },
+    {
+      "vessel_type": "archipelago_traffic",
+      "component": "passenger_dues",
+      "charging_method": "per_passenger",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 6.6,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for passengers on archipelago traffic",
+      "notes": null
+    },
+    {
+      "vessel_type": "harbour_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "duration of service",
+          "min_value": 30.0,
+          "max_value": 99.0,
+          "band_type": "years"
+        },
+        {
+          "name": "duration of service",
+          "min_value": 100.0,
+          "max_value": 299.0,
+          "band_type": "years"
+        },
+        {
+          "name": "duration of service",
+          "min_value": 300.0,
+          "max_value": null,
+          "band_type": "years"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 12820.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for service vessels between 30-99 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "harbour_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "duration of service",
+          "min_value": 100.0,
+          "max_value": 299.0,
+          "band_type": "years"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 24000.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for service vessels between 100-299 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "harbour_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "flat_sek_per_call",
+      "bands": [
+        {
+          "name": "duration of service",
+          "min_value": 300.0,
+          "max_value": null,
+          "band_type": "years"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 69000.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for service vessels over 300 GT",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "port_infrastructure_dues",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [],
+      "pricing": {
+        "rate": 1.7,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for other vessels",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports."
+        },
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports."
+        }
+      ],
+      "pricing": {
+        "rate": 0.24,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for ship-generated solid waste for non-European arrivals",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "European ports",
+          "description": "Applicable for vessels arriving from European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "arrival port",
+          "operator": "from",
+          "value": "non-European ports",
+          "description": "Applicable for vessels arriving from non-European ports with sludge up to 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 0.27,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge from non-European ports",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_m3",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "quantity",
+          "operator": "more than",
+          "value": "11 m³",
+          "description": "Applicable for sludge exceeding 11 m³."
+        }
+      ],
+      "pricing": {
+        "rate": 2300.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": "Dues for sludge exceeding 11 m³",
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "security_patrol_isps_due",
+      "charging_method": "flat_sek_per_call",
+      "bands": [],
+      "conditions": [
+        {
+          "field": "ISPS certificate",
+          "operator": "equals",
+          "value": "yes",
+          "description": "Applicable for vessels with an ISPS certificate mooring at Stigbergskajen, quay 751."
+        },
+        {
+          "field": "ISPS certificate",
+          "operator": "equals",
+          "value": "no",
+          "description": "Applicable for vessels without an ISPS certificate mooring at quay 751, must bear inspection costs."
+        }
+      ],
+      "pricing": {
+        "rate": 8000.0,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": null,
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "sludge_oily_bilge_water",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT",
+          "min_value": 0.0,
+          "max_value": 30000.0,
+          "band_type": "max"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 0.17,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": null,
+      "notes": null
+    },
+    {
+      "vessel_type": "other_vessels",
+      "component": "ship_generated_solid_waste",
+      "charging_method": "per_gt",
+      "bands": [
+        {
+          "name": "GT",
+          "min_value": 0.0,
+          "max_value": 30000.0,
+          "band_type": "max"
+        }
+      ],
+      "conditions": [],
+      "pricing": {
+        "rate": 0.13,
+        "currency": "SEK",
+        "flat_fee": null,
+        "percentage": null,
+        "formula": null,
+        "min_charge": null,
+        "max_charge": null
+      },
+      "description": null,
+      "notes": null
+    }
+  ]
+}

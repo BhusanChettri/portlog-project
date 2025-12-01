@@ -1,0 +1,76 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables (MUST be excluded - contains API keys)
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# ChromaDB (can be regenerated - will be created on first run)
+chroma_db/
+*.bin
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Jupyter notebooks (development only)
+.ipynb_checkpoints/
+test.ipynb
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Other development files
+output.png
+
+# Note: We ARE keeping:
+# - data/port-of-gothenburg-port-tariff-2025.pdf (needed for extraction)
+# - extracted_data/tariff_rules.json (needed for calculations without extraction)
