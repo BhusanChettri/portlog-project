@@ -12,7 +12,7 @@ A deterministic tariff calculation system for port charges, augmented with RAG (
 - [Workflow](#workflow)
 - [Components](#components)
 - [Testing](#testing)
-- [Code Documentation](#code-documentation)
+- [Key Design Decisions](#key-design-decisions)
 
 ## Prerequisites
 
