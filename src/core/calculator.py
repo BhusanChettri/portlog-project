@@ -9,6 +9,7 @@ from src.models.utils import (
     calculate_component_cost,
     find_applicable_band,
 )
+from src.config.settings import get_settings
 
 
 class CalculationResult:
@@ -72,7 +73,7 @@ class CalculationResult:
             "total": self.total,
             "components": self.components,
             "breakdown": self.breakdown,
-            "currency": "SEK"
+            "currency": get_settings().default_currency
         }
 
 
@@ -200,7 +201,8 @@ class TariffCalculator:
                 continue
             
             # For exclusive components, skip if we've already applied one
-            exclusive_components = ["port_infrastructure_dues"]
+            settings = get_settings()
+            exclusive_components = settings.exclusive_components
             
             # For solid waste and sludge, only exclude if it's a base charge (per_gt) with positive rate
             if rule.component.value == "ship_generated_solid_waste":
@@ -257,19 +259,20 @@ class TariffCalculator:
             elif rule.component.value == "sludge_oily_bilge_water" and rule.charging_method.value == "per_gt":
                 applied_components.add(rule.component.value)
             
-            # Special handling for sludge exceeding 11m³
+            # Special handling for sludge exceeding threshold
             quantity_override = None
+            sludge_threshold = settings.sludge_free_threshold_m3
             if (rule.component.value == "sludge_oily_bilge_water" and 
                 rule.charging_method.value == "per_m3" and
-                context.get("sludge_volume", 0) > 11):
+                context.get("sludge_volume", 0) > sludge_threshold):
                 has_exceeding_condition = any(
                     cond.field in ["quantity", "sludge_volume"] and 
                     "more than" in str(cond.operator).lower() and
-                    "11" in str(cond.value)
+                    str(sludge_threshold) in str(cond.value)
                     for cond in rule.conditions
                 )
                 if has_exceeding_condition:
-                    excess_volume = context.get("sludge_volume", 0) - 11
+                    excess_volume = context.get("sludge_volume", 0) - sludge_threshold
                     quantity_override = excess_volume
             
             # Calculate cost
@@ -296,17 +299,19 @@ class TariffCalculator:
         
         # Apply ESI discount to port infrastructure dues if applicable
         esi_score = context.get("esi_score", 0)
-        if esi_score is not None and esi_score >= 30:
+        esi_threshold = settings.esi_score_threshold
+        esi_discount_pct = settings.esi_discount_percentage
+        if esi_score is not None and esi_score >= esi_threshold:
             port_dues_cost = result.components.get("port_infrastructure_dues", 0)
             if port_dues_cost > 0:
-                esi_discount = port_dues_cost * -0.10
+                esi_discount = port_dues_cost * -esi_discount_pct
                 result.add_component(
                     component_name="environmental_discounts",
                     cost=esi_discount,
                     rule=None,
                     details={
                         "type": "ESI_discount",
-                        "percentage": -10,
+                        "percentage": -int(esi_discount_pct * 100),
                         "applied_to": "port_infrastructure_dues"
                     }
                 )

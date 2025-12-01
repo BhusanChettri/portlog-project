@@ -1,22 +1,15 @@
 """Query understanding - extracts structured parameters from natural language queries."""
 
-from pathlib import Path
-from dotenv import load_dotenv
-
 from langchain.chat_models import init_chat_model
 
 from src.models.schema import VesselType
 from src.models.query_models import QueryParameters
 from src.prompts.query_prompts import QUERY_UNDERSTANDING_PROMPT
+from src.config.settings import get_settings
+from src.config.env_loader import load_environment_variables
 
 # Load environment variables
-project_dir = Path(__file__).parent.parent.parent
-parent_dir = project_dir.parent
-env_file = parent_dir / ".env"
-if env_file.exists():
-    load_dotenv(env_file)
-elif (project_dir / ".env").exists():
-    load_dotenv(project_dir / ".env")
+load_environment_variables()
 
 
 class QueryUnderstanding:
@@ -27,13 +20,16 @@ class QueryUnderstanding:
     object. This is the first node in the LangGraph workflow.
     """
     
-    def __init__(self, llm_model: str = "gpt-4o-mini", llm_provider: str = "openai"):
+    def __init__(self, llm_model: str = None, llm_provider: str = None):
         """Initialize query understanding component.
         
         Args:
-            llm_model: LLM model to use for query understanding (default: "gpt-4o-mini")
-            llm_provider: LLM provider name (default: "openai")
+            llm_model: LLM model to use for query understanding (defaults to config)
+            llm_provider: LLM provider name (defaults to config)
         """
+        settings = get_settings()
+        llm_model = llm_model or settings.llm_model_query_understanding
+        llm_provider = llm_provider or settings.llm_provider
         self.llm = init_chat_model(llm_model, model_provider=llm_provider)
     
     def understand(self, query: str) -> QueryParameters:

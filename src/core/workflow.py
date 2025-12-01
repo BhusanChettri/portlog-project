@@ -10,6 +10,15 @@ from src.models.query_models import QueryParameters
 from src.core.retriever import RAGRetriever
 from src.core.calculator import TariffCalculator
 from src.core.response_generator import ResponseGenerator
+from src.config.settings import get_settings
+from src.config.logging_config import get_logger
+from src.config.messages import (
+    ERROR_NO_PARAMETERS,
+    ERROR_VESSEL_TYPE_NOT_IDENTIFIED,
+    ERROR_CALCULATION_FAILED,
+)
+
+logger = get_logger(__name__)
 
 
 class TariffWorkflowState(TypedDict):
@@ -94,12 +103,12 @@ class TariffWorkflow:
         if self._initialized:
             return
         
-        print("Initializing Tariff Workflow (LangGraph)...")
-        print("1. Initializing RAG retriever...")
+        logger.info("Initializing Tariff Workflow (LangGraph)...")
+        logger.info("1. Initializing RAG retriever...")
         self.rag_retriever.initialize()
-        print("2. Loading tariff database...")
+        logger.info("2. Loading tariff database...")
         # Calculator already loads database in __init__
-        print("3. Building LangGraph workflow...")
+        logger.info("3. Building LangGraph workflow...")
         
         # Build LangGraph
         graph = StateGraph(TariffWorkflowState)
@@ -131,8 +140,7 @@ class TariffWorkflow:
         # Compile graph
         self.graph = graph.compile()
         
-        print("4. LangGraph workflow ready!")
-        print()
+        logger.info("4. LangGraph workflow ready!")
         
         self._initialized = True
     
@@ -149,15 +157,11 @@ class TariffWorkflow:
         Returns:
             Updated state with 'parameters' field populated
         """
-        print("Node 1: Query Understanding...")
+        logger.info("Node 1: Query Understanding")
         query = state["query"]
         
         parameters = self.query_understanding.understand(query)
-        print(f"  - Vessel type: {parameters.vessel_type or 'Not identified'}")
-        print(f"  - GT: {parameters.vessel_details.gross_tonnage_gt}")
-        print(f"  - Arrival region: {parameters.call_context.arrival_region}")
-        print(f"  - Query intent: {parameters.query_intent.type}")
-        print()
+        logger.debug(f"Extracted: vessel_type={parameters.vessel_type}, GT={parameters.vessel_details.gross_tonnage_gt}, region={parameters.call_context.arrival_region}")
         
         return {"parameters": parameters}
     
@@ -174,13 +178,13 @@ class TariffWorkflow:
         Returns:
             Updated state with 'rag_context' field populated (formatted JSON string)
         """
-        print("Node 2: Retriever (RAG)...")
+        logger.info("Node 2: Retriever (RAG)")
         query = state["query"]
         
-        rag_context = self.rag_retriever.retrieve_context(query, k=5)
+        settings = get_settings()
+        rag_context = self.rag_retriever.retrieve_context(query, k=settings.rag_retrieval_count)
         doc_count = rag_context.count('"id"') if rag_context else 0
-        print(f"  - Retrieved {doc_count} relevant documents")
-        print()
+        logger.debug(f"Retrieved {doc_count} relevant documents")
         
         return {"rag_context": rag_context}
     
@@ -204,44 +208,25 @@ class TariffWorkflow:
         Returns:
             Updated state with 'compiled_information' field populated
         """
-        print("Node 3: Compile Information / Enrich Parameters...")
+        logger.info("Node 3: Compile Information")
         
         parameters = state.get("parameters")
         
         if not parameters:
-            print("  - No parameters to enrich")
-            print()
-            return {"compiled_information": "No parameters extracted"}
+            logger.warning("No parameters to enrich")
+            return {"compiled_information": ERROR_NO_PARAMETERS}
         
         # Get available rules for this vessel type
-        vessel_type_enum = None
-        if parameters.vessel_type:
-            from src.models.schema import VesselType
-            vessel_type_map = {
-                "tanker": VesselType.TANKERS,
-                "container": VesselType.CONTAINER_VESSELS,
-                "container_vessel": VesselType.CONTAINER_VESSELS,
-                "roro": VesselType.RORO_VESSELS,
-                "car_carrier": VesselType.CAR_CARRIERS,
-                "cruise": VesselType.CRUISE_VESSELS,
-                "yacht": VesselType.YACHTS,
-            }
-            vessel_type_enum = vessel_type_map.get(parameters.vessel_type.lower())
-            if not vessel_type_enum:
-                try:
-                    vessel_type_enum = VesselType(parameters.vessel_type.lower())
-                except ValueError:
-                    pass
+        # Use the existing conversion method from QueryParameters to avoid duplication
+        calc_params = parameters.to_calculator_params()
+        vessel_type_enum = calc_params.get("vessel_type")
         
         if vessel_type_enum:
             available_rules = self.calculator.database.get_rules(
                 vessel_type=vessel_type_enum
             )
-            print(f"  - Found {len(available_rules)} applicable rules for {parameters.vessel_type}")
-            
-            # Check which components are available
             components = set(rule.component for rule in available_rules)
-            print(f"  - Available components: {len(components)}")
+            logger.debug(f"Found {len(available_rules)} rules, {len(components)} components for {parameters.vessel_type}")
             
             # Validate that we have minimum required parameters
             validation_notes = []
@@ -267,15 +252,12 @@ class TariffWorkflow:
                 "ready_for_calculation": vessel_type_enum is not None
             }
             
-            print(f"  - Parameters enriched and validated")
-            print(f"  - Ready for calculation: {compiled_info['ready_for_calculation']}")
-            print()
+            logger.debug(f"Parameters enriched, ready_for_calculation={compiled_info['ready_for_calculation']}")
             
             return {"compiled_information": str(compiled_info)}
         else:
-            print("  - Vessel type not identified, cannot enrich parameters")
-            print()
-            return {"compiled_information": "Vessel type not identified"}
+            logger.warning("Vessel type not identified, cannot enrich parameters")
+            return {"compiled_information": ERROR_VESSEL_TYPE_NOT_IDENTIFIED}
     
     def _tariff_computation_node(self, state: TariffWorkflowState) -> TariffWorkflowState:
         """Calculate tariff deterministically using JSON rules (Node 4).
@@ -291,17 +273,18 @@ class TariffWorkflow:
         Returns:
             Updated state with 'calculation_result' field populated (dictionary format)
         """
-        print("Node 4: Tariff Computation (Deterministic)...")
+        logger.info("Node 4: Tariff Computation")
         
         parameters = state.get("parameters")
         
         if not parameters or not parameters.vessel_type:
+            logger.warning("Vessel type not identified for calculation")
             return {
                 "calculation_result": {
                     "total": 0.0,
                     "components": {},
                     "breakdown": [],
-                    "error": "Vessel type not identified"
+                    "error": ERROR_VESSEL_TYPE_NOT_IDENTIFIED
                 }
             }
         
@@ -313,9 +296,7 @@ class TariffWorkflow:
         
         # Calculate
         calculation_result = self.calculator.calculate(calc_params)
-        print(f"  - Total: {calculation_result.total:.2f} SEK")
-        print(f"  - Components: {len(calculation_result.components)}")
-        print()
+        logger.info(f"Calculation complete: {calculation_result.total:.2f} SEK ({len(calculation_result.components)} components)")
         
         return {"calculation_result": calculation_result.to_dict()}
     
@@ -342,14 +323,15 @@ class TariffWorkflow:
         Returns:
             Updated state with 'answer' field populated (natural language response)
         """
-        print("Node 5: Response Generator...")
+        logger.info("Node 5: Response Generator")
         
         query = state["query"]
         calculation_result = state.get("calculation_result")
         rag_context = state.get("rag_context", "")
         
         if not calculation_result or calculation_result.get("error"):
-            answer = "I couldn't calculate the tariff. Please provide more details about the vessel type and specifications."
+            logger.warning("No valid calculation result, returning error message")
+            answer = ERROR_CALCULATION_FAILED
         else:
             answer = self.response_generator.generate(
                 query=query,
@@ -357,8 +339,7 @@ class TariffWorkflow:
                 rag_context=rag_context
             )
         
-        print("  - Response generated")
-        print()
+        logger.debug("Response generated")
         
         return {"answer": answer}
     
@@ -375,11 +356,7 @@ class TariffWorkflow:
         if not self._initialized:
             self.initialize()
         
-        print("=" * 60)
-        print("Processing Query (LangGraph Workflow)")
-        print("=" * 60)
-        print(f"Query: {query}")
-        print()
+        logger.info(f"Processing query: {query}")
         
         # Invoke LangGraph
         initial_state: TariffWorkflowState = {
@@ -393,10 +370,7 @@ class TariffWorkflow:
         
         result = self.graph.invoke(initial_state)
         
-        print("=" * 60)
-        print("Workflow Complete")
-        print("=" * 60)
-        print()
+        logger.info("Workflow complete")
         
         return result["answer"]
 

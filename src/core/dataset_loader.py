@@ -5,6 +5,10 @@ from pathlib import Path
 from typing import Optional
 
 from src.models.schema import TariffDatabase, TariffRule
+from src.config.settings import get_settings
+from src.config.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 class TariffLoader:
@@ -30,7 +34,7 @@ class TariffLoader:
         if not json_path.exists():
             raise FileNotFoundError(f"Tariff data file not found: {json_path}")
         
-        print(f"Loading tariff data from: {json_path}")
+        logger.info(f"Loading tariff data from: {json_path}")
         
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -42,16 +46,17 @@ class TariffLoader:
                 rule = TariffRule(**rule_dict)
                 rules.append(rule)
             except Exception as e:
-                print(f"Warning: Failed to load rule: {e}")
-                print(f"Rule data: {rule_dict}")
+                logger.warning(f"Failed to load rule: {e}")
+                logger.debug(f"Rule data: {rule_dict}")
         
+        settings = get_settings()
         database = TariffDatabase(
             rules=rules,
-            version=data.get("version", "2025"),
-            port_name=data.get("port_name", "Port of Gothenburg")
+            version=data.get("version", settings.tariff_version),
+            port_name=data.get("port_name", settings.port_name)
         )
         
-        print(f"Loaded {len(rules)} tariff rules")
+        logger.info(f"Loaded {len(rules)} tariff rules")
         return database
     
     @staticmethod
@@ -59,11 +64,11 @@ class TariffLoader:
         """Get default path to extracted tariff data.
         
         Returns:
-            Path object pointing to extracted_data/tariff_rules.json
-            relative to the project root.
+            Path object pointing to tariff rules JSON file from config.
         """
         project_dir = Path(__file__).parent.parent.parent
-        return project_dir / "extracted_data" / "tariff_rules.json"
+        settings = get_settings()
+        return settings.get_tariff_rules_path(project_dir)
     
     @staticmethod
     def load_default() -> Optional[TariffDatabase]:

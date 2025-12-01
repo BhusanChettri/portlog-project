@@ -4,19 +4,9 @@ import json
 from pathlib import Path
 from typing import List, Optional
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
 
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.chat_models import init_chat_model
-
-# Load environment variables
-project_dir = Path(__file__).parent.parent.parent
-parent_dir = project_dir.parent
-env_file = parent_dir / ".env"
-if env_file.exists():
-    load_dotenv(env_file)
-elif (project_dir / ".env").exists():
-    load_dotenv(project_dir / ".env")
 
 from src.models.schema import (
     TariffDatabase,
@@ -26,6 +16,14 @@ from src.models.schema import (
     ChargingMethod,
 )
 from src.prompts.extraction_prompts import EXTRACTION_PROMPT
+from src.config.settings import get_settings
+from src.config.env_loader import load_environment_variables
+from src.config.logging_config import get_logger
+
+# Load environment variables
+load_environment_variables()
+
+logger = get_logger(__name__)
 
 
 class ExtractionResponse(BaseModel):
@@ -58,14 +56,17 @@ class TariffExtractor:
     5. Saves to JSON file for future use
     """
     
-    def __init__(self, llm_model: str = "gpt-4.5", llm_provider: str = "openai"):
+    def __init__(self, llm_model: str = None, llm_provider: str = None):
         """
         Initialize the extractor.
         
         Args:
-            llm_model: LLM model to use for extraction
-            llm_provider: LLM provider (openai, etc.)
+            llm_model: LLM model to use for extraction (defaults to config)
+            llm_provider: LLM provider (defaults to config)
         """
+        settings = get_settings()
+        llm_model = llm_model or settings.llm_model_extraction
+        llm_provider = llm_provider or settings.llm_provider
         self.llm = init_chat_model(llm_model, model_provider=llm_provider)
         self.llm_structured = self.llm.with_structured_output(ExtractionResponse)
     
@@ -73,26 +74,31 @@ class TariffExtractor:
         self,
         pdf_path: Path,
         output_path: Optional[Path] = None,
-        chunk_size: int = 50000  # Process PDF in chunks if too large
+        chunk_size: int = None
     ) -> TariffDatabase:
         """
         Extract tariff rules from PDF and save to JSON.
         
         Args:
             pdf_path: Path to PDF file
-            output_path: Path to save extracted JSON (default: extracted_data/tariff_rules.json)
-            chunk_size: Maximum characters per chunk for processing large PDFs
+            output_path: Path to save extracted JSON (defaults to config)
+            chunk_size: Maximum characters per chunk for processing large PDFs (defaults to config)
         
         Returns:
             TariffDatabase with extracted rules
         """
-        print(f"Loading PDF: {pdf_path}")
+        logger.info(f"Loading PDF: {pdf_path}")
         loader = PyPDFLoader(str(pdf_path))
         pages = loader.load()
         
         # Combine all pages
         full_text = "\n".join([p.page_content for p in pages])
-        print(f"PDF loaded: {len(pages)} pages, {len(full_text)} characters")
+        logger.info(f"PDF loaded: {len(pages)} pages, {len(full_text)} characters")
+        
+        # Get settings for defaults
+        settings = get_settings()
+        if chunk_size is None:
+            chunk_size = settings.extraction_chunk_size
         
         # Prepare prompt with vessel types and component names
         vessel_types = [vt.value for vt in VesselType]
@@ -100,12 +106,12 @@ class TariffExtractor:
         
         # Process in chunks if PDF is very large
         if len(full_text) > chunk_size:
-            print(f"PDF is large ({len(full_text)} chars), processing in chunks...")
+            logger.info(f"PDF is large ({len(full_text)} chars), processing in chunks...")
             all_rules = []
             chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
             
             for i, chunk in enumerate(chunks):
-                print(f"Processing chunk {i+1}/{len(chunks)}...")
+                logger.info(f"Processing chunk {i+1}/{len(chunks)}...")
                 response = self._extract_from_text(chunk, vessel_types, component_names)
                 # Parse JSON string to list
                 rules_data = json.loads(response.rules)
@@ -155,21 +161,23 @@ class TariffExtractor:
                 rule = TariffRule(**rule_dict)
                 rules.append(rule)
             except Exception as e:
-                print(f"Warning: Failed to parse rule: {e}")
-                print(f"Rule data: {rule_dict}")
+                logger.warning(f"Failed to parse rule: {e}")
+                logger.debug(f"Rule data: {rule_dict}")
         
-        print(f"Extracted {len(rules)} tariff rules")
+        logger.info(f"Extracted {len(rules)} tariff rules")
         
         # Create database
+        settings = get_settings()
         database = TariffDatabase(
             rules=rules,
-            version="2025",
-            port_name="Port of Gothenburg"
+            version=settings.tariff_version,
+            port_name=settings.port_name
         )
         
         # Save to disk
         if output_path is None:
-            output_path = project_dir / "extracted_data" / "tariff_rules.json"
+            project_dir = Path(__file__).parent.parent.parent
+            output_path = settings.get_tariff_rules_path(project_dir)
         
         output_path.parent.mkdir(parents=True, exist_ok=True)
         self._save_to_disk(database, output_path)
@@ -188,7 +196,7 @@ class TariffExtractor:
         to extract tariff rules from PDF text content.
         
         Args:
-            text: PDF text content (truncated to 100,000 chars if longer)
+            text: PDF text content (truncated to configured limit if longer)
             vessel_types: List of vessel type strings for prompt
             component_names: List of component name strings for prompt
         
@@ -196,12 +204,14 @@ class TariffExtractor:
             ExtractionResponse containing JSON string of extracted rules
         
         Note:
-            Text is truncated to 100,000 characters to fit within LLM context limits.
+            Text is truncated to configured limit to fit within LLM context limits.
         """
         # Create chain with prompt template
+        settings = get_settings()
+        truncate_limit = settings.extraction_text_truncate_limit
         chain = EXTRACTION_PROMPT | self.llm_structured
         response = chain.invoke({
-            "pdf_content": text[:100000],
+            "pdf_content": text[:truncate_limit],
             "vessel_types": ", ".join(vessel_types),
             "component_names": ", ".join(component_names)
         })
@@ -231,6 +241,6 @@ class TariffExtractor:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
-        print(f"Saved extracted data to: {output_path}")
-        print(f"Total rules saved: {len(database.rules)}")
+        logger.info(f"Saved extracted data to: {output_path}")
+        logger.info(f"Total rules saved: {len(database.rules)}")
 

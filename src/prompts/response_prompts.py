@@ -29,26 +29,19 @@ Your responsibilities:
 
 ### Response structure (MANDATORY)
 
-1. **Short, direct answer to the user's query**  
-   One or two sentences summarizing the result.
-
-2. **Tariff Breakdown (Authoritative)**  
+1. **Tariff Breakdown**  
    A table-like or bullet-point list:
    - Component name  
    - Formula (if provided in calculation_result)  
    - Amount in SEK  
 
-3. **Total Cost**  
+2. **Total Cost**  
    State the final total clearly.
 
-4. **Grounded Explanation (Using RAG context)**  
+3. **Grounded Explanation (Using RAG context)**  
    - Explain why each component applies.  
    - Cite supporting rules from the RAG context.  
    - Use citations **only** from the provided RAG snippets.
-
-5. **Additional Notes** (optional)  
-   - Mention any components that are typically applicable but not triggered in this call.  
-   - Clarify anything ambiguous.
 
 ### Output constraints:
 - Use ONLY the numeric values from the calculation result.
@@ -66,7 +59,7 @@ Your responsibilities:
 User Query:
 {query}
 
-Calculated Tariff (Authoritative):
+Calculated Tariff:
 {calculation_result}
 
 RAG Context:

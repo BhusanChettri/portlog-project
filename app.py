@@ -5,21 +5,20 @@ from pathlib import Path
 from typing import List, Tuple
 
 import gradio as gr
-from dotenv import load_dotenv
-
-# Load environment variables
-project_dir = Path(__file__).parent
-parent_dir = project_dir.parent
-env_file = parent_dir / ".env"
-if env_file.exists():
-    load_dotenv(env_file)
-elif (project_dir / ".env").exists():
-    load_dotenv(project_dir / ".env")
 
 # Add src to path
+project_dir = Path(__file__).parent
 sys.path.insert(0, str(project_dir / "src"))
 
 from src.core.workflow import TariffWorkflow
+from src.config.settings import get_settings
+from src.config.env_loader import load_environment_variables
+from src.config.logging_config import get_logger
+
+# Load environment variables
+load_environment_variables(project_dir)
+
+logger = get_logger(__name__)
 
 
 class TariffChatInterface:
@@ -37,11 +36,11 @@ class TariffChatInterface:
     def initialize(self):
         """Initialize the workflow."""
         if not self.initialized:
-            print("Initializing Port Tariff Workflow...")
+            logger.info("Initializing Port Tariff Workflow...")
             self.workflow = TariffWorkflow()
             self.workflow.initialize()
             self.initialized = True
-            print("Workflow initialized successfully!")
+            logger.info("Workflow initialized successfully!")
     
     def process_message(self, message: str, history: List[Tuple[str, str]]) -> str:
         """Process a message and return a response.
@@ -227,21 +226,26 @@ def create_demo():
 
 def main():
     """Main entry point for the Port Tariff Calculation System."""
+    # User-facing startup messages - keep as print for visibility
     print("=" * 60)
     print("Port Tariff Calculation System v0")
     print("=" * 60)
     print("Starting web interface...")
+    settings = get_settings()
     print("The UI will open in your browser automatically.")
-    print("If it doesn't, navigate to: http://localhost:7860")
+    print(f"If it doesn't, navigate to: http://localhost:{settings.server_port}")
     print("Press Ctrl+C to stop the server.")
     print("=" * 60)
     print()
     
+    # Log startup for debugging
+    logger.info("Starting Gradio web interface")
+    
     # Create and launch the demo
     demo = create_demo()
     demo.launch(
-        server_name="0.0.0.0",  # Allow access from network
-        server_port=7860,       # Default Gradio port
+        server_name=settings.server_host,
+        server_port=settings.server_port,
         share=False             # Set to True to create a public link
     )
 

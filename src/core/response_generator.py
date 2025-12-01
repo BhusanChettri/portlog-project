@@ -1,21 +1,22 @@
 """Generate natural language response from calculator output and RAG context."""
 
-from typing import Dict, Optional
-from dotenv import load_dotenv
-from pathlib import Path
+from typing import Dict
 
 from langchain.chat_models import init_chat_model
 
 from src.prompts.response_prompts import RESPONSE_GENERATION_PROMPT
+from src.config.settings import get_settings
+from src.config.env_loader import load_environment_variables
+from src.config.messages import (
+    STATUS_NO_ADDITIONAL_CONTEXT,
+    FORMAT_TOTAL_LABEL,
+    FORMAT_BREAKDOWN_LABEL,
+    FORMAT_RATE_LABEL,
+    FORMAT_PER_UNIT,
+)
 
 # Load environment variables
-project_dir = Path(__file__).parent.parent.parent
-parent_dir = project_dir.parent
-env_file = parent_dir / ".env"
-if env_file.exists():
-    load_dotenv(env_file)
-elif (project_dir / ".env").exists():
-    load_dotenv(project_dir / ".env")
+load_environment_variables()
 
 
 class ResponseGenerator:
@@ -26,14 +27,17 @@ class ResponseGenerator:
     node in the LangGraph workflow.
     """
     
-    def __init__(self, llm_model: str = "gpt-4o-mini", llm_provider: str = "openai"):
+    def __init__(self, llm_model: str = None, llm_provider: str = None):
         """
         Initialize response generator.
         
         Args:
-            llm_model: LLM model to use
-            llm_provider: LLM provider
+            llm_model: LLM model to use (defaults to config)
+            llm_provider: LLM provider (defaults to config)
         """
+        settings = get_settings()
+        llm_model = llm_model or settings.llm_model_response_generation
+        llm_provider = llm_provider or settings.llm_provider
         self.llm = init_chat_model(llm_model, model_provider=llm_provider)
     
     def generate(
@@ -54,14 +58,17 @@ class ResponseGenerator:
             Natural language response
         """
         # Format calculation result
-        calc_str = f"Total: {calculation_result['total']:.2f} {calculation_result.get('currency', 'SEK')}\n\n"
-        calc_str += "Breakdown:\n"
+        settings = get_settings()
+        currency = calculation_result.get('currency', settings.default_currency)
+        calc_str = f"{FORMAT_TOTAL_LABEL} {calculation_result['total']:.2f} {currency}\n\n"
+        calc_str += f"{FORMAT_BREAKDOWN_LABEL}\n"
         for item in calculation_result.get('breakdown', []):
-            calc_str += f"- {item['component']}: {item['cost']:.2f} {calculation_result.get('currency', 'SEK')}\n"
+            calc_str += f"- {item['component']}: {item['cost']:.2f} {currency}\n"
             if 'details' in item:
                 details = item['details']
                 if 'rate' in details:
-                    calc_str += f"  (Rate: {details['rate']} {details.get('currency', 'SEK')} per {details.get('charging_method', 'unit')})\n"
+                    charging_method = details.get('charging_method', 'unit')
+                    calc_str += f"  ({FORMAT_RATE_LABEL} {details['rate']} {details.get('currency', currency)} {FORMAT_PER_UNIT} {charging_method})\n"
         
         # Create chain with prompt template
         chain = RESPONSE_GENERATION_PROMPT | self.llm
@@ -70,7 +77,7 @@ class ResponseGenerator:
         response = chain.invoke({
             "query": query,
             "calculation_result": calc_str,
-            "rag_context": rag_context or "No additional context available."
+            "rag_context": rag_context or STATUS_NO_ADDITIONAL_CONTEXT
         })
         
         return response.content if hasattr(response, 'content') else str(response)
